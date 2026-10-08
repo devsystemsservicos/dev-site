@@ -1,0 +1,158 @@
+---
+import Logo from "./Logo.astro";
+import { site, contact, services, whatsappLink } from "../data/site";
+
+const year = new Date().getFullYear();
+
+const columns = [
+  {
+    title: "Navegar",
+    links: [
+      { href: "#inicio", label: "Início" },
+      { href: "#solucoes", label: "Soluções" },
+      { href: "#processo", label: "Como trabalhamos" },
+      { href: "#sobre", label: "Sobre" },
+      { href: "#contacto", label: "Contacto" },
+    ],
+  },
+  {
+    title: "Serviços",
+    links: services.map((s) => ({ href: "#solucoes", label: s.name })),
+  },
+];
+---
+
+<footer class="ft on-navy">
+  <div class="shell">
+    <div class="ft__top">
+      <div class="ft__brand">
+        <a href="#inicio" class="ft__logo" aria-label={`${site.name} — início`}>
+          <Logo tone="light" markHeight={42} />
+        </a>
+        <p class="ft__tagline">{site.tagline}</p>
+        <p class="ft__where">{contact.address}</p>
+      </div>
+
+      {
+        columns.map((col) => (
+          <nav class="ft__col" aria-label={col.title}>
+            <h2 class="ft__title">{col.title}</h2>
+            <ul class="ft__list">
+              {col.links.map((l) => (
+                <li>
+                  <a href={l.href}>{l.label}</a>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        ))
+      }
+
+      <div class="ft__col">
+        <h2 class="ft__title">Falar</h2>
+        <ul class="ft__list">
+          <li>
+            <a
+              href={whatsappLink()}
+              target="_blank"
+              rel="noopener noreferrer">{contact.phoneDisplay}</a
+            >
+          </li>
+          <li><a href={`mailto:${contact.email}`}>{contact.email}</a></li>
+        </ul>
+        <a class="btn btn--wa ft__cta" href={whatsappLink()} target="_blank" rel="noopener noreferrer">
+          Falar no WhatsApp
+        </a>
+      </div>
+    </div>
+
+    <div class="ft__bottom">
+      <p>© {year} {site.name}. Todos os direitos reservados.</p>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .ft {
+    background: var(--navy-deep);
+    color: var(--on-navy-body);
+    padding-block: clamp(3.5rem, 7vw, 5.5rem) 2.25rem;
+  }
+
+  .ft__top {
+    display: grid;
+    grid-template-columns: minmax(0, 1.5fr) repeat(3, minmax(0, 1fr));
+    gap: clamp(2rem, 4vw, 3.5rem);
+    padding-bottom: 3rem;
+    border-bottom: 1px solid var(--rule-navy);
+  }
+
+  .ft__logo {
+    display: inline-block;
+    text-decoration: none;
+  }
+
+  .ft__tagline {
+    margin-top: 1.35rem;
+    max-width: 26ch;
+    font-size: 1.0625rem;
+    font-weight: 500;
+    line-height: 1.5;
+    color: var(--on-navy);
+  }
+
+  .ft__where {
+    margin-top: 0.85rem;
+    font-size: 0.9375rem;
+  }
+
+  .ft__title {
+    font-size: 0.9375rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    color: var(--on-navy);
+  }
+
+  .ft__list {
+    margin-top: 1.1rem;
+    display: grid;
+    gap: 0.6rem;
+  }
+
+  .ft__list a {
+    color: var(--on-navy-body);
+    font-size: 0.9375rem;
+    text-decoration: none;
+    transition: color 0.18s var(--ease);
+  }
+
+  .ft__list a:hover {
+    color: var(--cyan);
+    text-decoration: underline;
+  }
+
+  .ft__cta {
+    margin-top: 1.5rem;
+  }
+
+  .ft__bottom {
+    padding-top: 1.75rem;
+    font-size: 0.875rem;
+  }
+
+  @media (max-width: 62rem) {
+    .ft__top {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .ft__brand {
+      grid-column: 1 / -1;
+    }
+  }
+
+  @media (max-width: 34rem) {
+    .ft__top {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+</style>

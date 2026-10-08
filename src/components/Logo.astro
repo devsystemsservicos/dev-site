@@ -1,0 +1,64 @@
+---
+/**
+ * Brand lockup: monogram artwork + the wordmark set in Manrope,
+ * so it stays crisp and recolours with the surface it sits on.
+ */
+interface Props {
+  tone?: "light" | "dark";
+  markHeight?: number;
+}
+
+const { tone = "dark", markHeight = 40 } = Astro.props;
+---
+
+<span class="logo" data-tone={tone} style={`--mark-h:${markHeight}px`} translate="no">
+  <img class="logo__mark" src="/brand/mark.png" alt="" width="180" height="160" />
+  <span class="logo__type">
+    <span class="logo__dev">DEV</span>
+    <span class="logo__sub">Systems &amp; Serviços</span>
+  </span>
+</span>
+
+<style>
+  .logo {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    text-decoration: none;
+  }
+
+  .logo__mark {
+    height: var(--mark-h);
+    width: auto;
+    flex: none;
+  }
+
+  .logo__type {
+    display: flex;
+    flex-direction: column;
+    line-height: 1;
+  }
+
+  .logo__dev {
+    font-size: calc(var(--mark-h) * 0.62);
+    font-weight: 800;
+    letter-spacing: -0.035em;
+    color: var(--ink);
+  }
+
+  .logo__sub {
+    margin-top: calc(var(--mark-h) * 0.09);
+    font-size: calc(var(--mark-h) * 0.235);
+    font-weight: 600;
+    letter-spacing: -0.015em;
+    color: var(--ink-body);
+  }
+
+  .logo[data-tone="light"] .logo__dev {
+    color: var(--on-navy);
+  }
+
+  .logo[data-tone="light"] .logo__sub {
+    color: var(--on-navy-body);
+  }
+</style>

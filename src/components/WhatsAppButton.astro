@@ -1,0 +1,122 @@
+---
+import WhatsAppIcon from "./WhatsAppIcon.astro";
+import { whatsappLink } from "../data/site";
+
+/**
+ * WhatsApp is the primary channel in Mozambique, so it gets a persistent
+ * affordance. It appears once the visitor is past the hero (below the fold it
+ * competes with the headline) and steps aside while the contact form is in
+ * view, so it never sits on top of the thing it duplicates.
+ *
+ * Deliberately WhatsApp green rather than brand blue: it is a platform
+ * affordance, not a brand colour, and recognition converts.
+ */
+const prefill =
+  "Olá! Gostaria de falar sobre um sistema para a minha empresa.";
+---
+
+<a
+  class="wa"
+  href={whatsappLink(prefill)}
+  target="_blank"
+  rel="noopener noreferrer"
+  data-wa
+  aria-label="Falar connosco no WhatsApp, abre numa nova janela"
+>
+  <WhatsAppIcon size={26} class="wa__icon" />
+  <span class="wa__label">Fale connosco</span>
+</a>
+
+<style>
+  .wa {
+    position: fixed;
+    right: clamp(1rem, 3vw, 1.75rem);
+    bottom: max(clamp(1rem, 3vw, 1.75rem), env(safe-area-inset-bottom));
+    z-index: 40;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.7rem 1.15rem 0.7rem 0.85rem;
+    border-radius: 999px;
+    background: #25d366;
+    color: #05330f;
+    font-size: 0.9375rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    text-decoration: none;
+    box-shadow: 0 6px 20px rgba(5, 51, 15, 0.28);
+    opacity: 0;
+    transform: translateY(14px);
+    pointer-events: none;
+    transition: opacity 0.24s var(--ease), transform 0.24s var(--ease),
+      background-color 0.18s var(--ease);
+  }
+
+  .wa[data-show] {
+    opacity: 1;
+    transform: none;
+    pointer-events: auto;
+  }
+
+  .wa:hover {
+    background: #1fbe5b;
+  }
+
+  .wa__icon {
+    width: 26px;
+    height: 26px;
+    flex: none;
+  }
+
+  /* Phones get a plain round button: a 190px pill is too much of the corner.
+     The glyph is universally recognised and the aria-label carries the name. */
+  @media (max-width: 34rem) {
+    .wa {
+      padding: 0.85rem;
+    }
+
+    .wa__label {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0 0 0 0);
+      white-space: nowrap;
+    }
+  }
+</style>
+
+<script>
+  const wa = document.querySelector<HTMLElement>("[data-wa]");
+  const contactSection = document.getElementById("contacto");
+  const hero = document.getElementById("inicio");
+
+  if (wa) {
+    let pastHero = false;
+    let atContact = false;
+    const sync = () => wa.toggleAttribute("data-show", pastHero && !atContact);
+
+    const onScroll = () => {
+      const trigger = hero ? hero.offsetHeight * 0.65 : 400;
+      pastHero = window.scrollY > trigger;
+      sync();
+    };
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
+
+    // Step aside when the form is on screen — the button would be in the way.
+    if (contactSection && "IntersectionObserver" in window) {
+      const io = new IntersectionObserver(
+        ([entry]) => {
+          atContact = entry.isIntersecting;
+          sync();
+        },
+        { threshold: 0.18 },
+      );
+      io.observe(contactSection);
+    }
+  }
+</script>

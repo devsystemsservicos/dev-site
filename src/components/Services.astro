@@ -1,0 +1,350 @@
+---
+import ServiceIcon from "./ServiceIcon.astro";
+import { services } from "../data/site";
+
+/**
+ * Progressive enhancement contract:
+ *  - Every service description is in the HTML. Without JS the whole thing
+ *    renders as a plain stacked list (see the <noscript> block) — no content
+ *    is locked behind a script that may not run.
+ *  - JS then claims the markup and turns it into a tabbed explorer, and keeps
+ *    the selected service in the URL hash so it can be linked to.
+ */
+---
+
+<section class="section section--white" id="solucoes" aria-labelledby="solucoes-titulo">
+  <div class="shell narrative">
+    <div class="narrative__step narrative__step--end">
+      <span class="narrative__node" aria-hidden="true"></span>
+      <div class="narrative__body">
+        <div class="head-split">
+          <h2 class="head__title" id="solucoes-titulo">Cinco frentes, um só sistema</h2>
+          <p class="head-split__lead">
+            Escolha um serviço para ver o que entregamos. Na prática, quase sempre
+            mais do que um — porque os problemas não vêm separados.
+          </p>
+        </div>
+
+        <div class="explorer" data-explorer>
+          <div
+            class="explorer__list"
+            role="tablist"
+            aria-orientation="vertical"
+            aria-label="Serviços"
+          >
+            {
+              services.map((s) => (
+                <button
+                  class="explorer__tab"
+                  type="button"
+                  role="tab"
+                  id={`tab-${s.id}`}
+                  aria-controls={`panel-${s.id}`}
+                  tabindex="-1"
+                  data-service={s.id}
+                >
+                  <span class="explorer__dot" aria-hidden="true" />
+                  <span class="explorer__label">{s.name}</span>
+                </button>
+              ))
+            }
+          </div>
+
+          <div class="explorer__panels">
+            {
+              services.map((s) => (
+                <div
+                  class="explorer__panel"
+                  role="tabpanel"
+                  id={`panel-${s.id}`}
+                  aria-labelledby={`tab-${s.id}`}
+                  data-panel={s.id}
+                >
+                  <span class="explorer__icon" aria-hidden="true">
+                    <ServiceIcon name={s.icon} />
+                  </span>
+                  <h3 class="explorer__name">{s.name}</h3>
+                  <p class="explorer__summary">{s.summary}</p>
+
+                  <h4 class="explorer__sub">O que pode esperar</h4>
+                  <ul class="explorer__includes">
+                    {s.includes.map((inc) => (
+                      <li>{inc}</li>
+                    ))}
+                  </ul>
+
+                  <a class="explorer__link" href="#contacto">Falar sobre este serviço</a>
+                </div>
+              ))
+            }
+          </div>
+        </div>
+
+        <noscript>
+          <style>
+            .explorer__list {
+              display: none;
+            }
+            .explorer__panel {
+              display: block !important;
+            }
+            .explorer__panel + .explorer__panel {
+              margin-top: 2.25rem;
+            }
+          </style>
+        </noscript>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .explorer {
+    margin-top: clamp(2.25rem, 4vw, 3.25rem);
+    display: grid;
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+    gap: clamp(2rem, 5vw, 4rem);
+    align-items: start;
+  }
+
+  /* ---- Node list ----
+     No connector line here on purpose: the narrative spine already runs down
+     this side of the section, and a second parallel line reads as a duplicate. */
+
+  .explorer__list {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+  }
+
+  .explorer__tab {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    padding: 0.85rem 0.9rem 0.85rem 0;
+    border: 0;
+    background: transparent;
+    text-align: left;
+    cursor: pointer;
+    color: var(--ink-body);
+    border-radius: 6px;
+    transition: color 0.2s var(--ease), background-color 0.2s var(--ease);
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .explorer__dot {
+    position: relative;
+    z-index: 1;
+    flex: none;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 0 0 2px #fff;
+    transition: box-shadow 0.24s var(--ease);
+  }
+
+  .explorer__dot::after {
+    content: "";
+    position: absolute;
+    inset: 6px;
+    border-radius: 50%;
+    background: var(--node);
+    transition: inset 0.24s var(--ease), background-color 0.24s var(--ease);
+  }
+
+  .explorer__label {
+    font-size: 1.0625rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.3;
+  }
+
+  .explorer__tab:hover {
+    color: var(--ink);
+    background: var(--mist);
+  }
+
+  .explorer__tab[aria-selected="true"] {
+    color: var(--ink);
+  }
+
+  .explorer__tab[aria-selected="true"] .explorer__dot {
+    box-shadow: 0 0 0 2px #fff, 0 0 0 5px rgba(6, 182, 212, 0.18);
+  }
+
+  .explorer__tab[aria-selected="true"] .explorer__dot::after {
+    inset: 4px;
+    background: var(--blue);
+  }
+
+  /* ---- Detail sheet ----
+     Hidden until JS claims the markup; <noscript> reveals every panel. */
+
+  .explorer__panel {
+    display: none;
+    padding: 0.35rem 0 0.35rem 1.75rem;
+    border-left: 2px solid var(--blue);
+  }
+
+  .explorer__panel[data-active] {
+    display: block;
+  }
+
+  .explorer__icon {
+    display: inline-flex;
+    color: var(--blue);
+  }
+
+  .explorer__icon :global(svg) {
+    width: 34px;
+    height: 34px;
+  }
+
+  .explorer__name {
+    margin-top: 1.1rem;
+    font-size: clamp(1.375rem, 2.4vw, 1.75rem);
+  }
+
+  .explorer__summary {
+    margin-top: 0.5rem;
+    max-width: 40ch;
+    font-size: 1.0625rem;
+  }
+
+  .explorer__sub {
+    margin-top: 1.9rem;
+    font-size: 0.9375rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+  }
+
+  .explorer__includes {
+    margin-top: 0.9rem;
+    display: grid;
+    gap: 0.65rem;
+  }
+
+  .explorer__includes li {
+    position: relative;
+    padding-left: 1.6rem;
+    font-size: 0.9875rem;
+  }
+
+  .explorer__includes li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0.62em;
+    width: 9px;
+    height: 9px;
+    border-radius: 2px;
+    background: linear-gradient(135deg, var(--cyan), var(--blue));
+  }
+
+  .explorer__link {
+    display: inline-block;
+    margin-top: 1.9rem;
+    font-size: 0.9375rem;
+    font-weight: 700;
+    color: var(--blue-ink);
+  }
+
+  .explorer__link:hover {
+    color: var(--navy);
+  }
+
+  @media (max-width: 56rem) {
+    .explorer {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 1.75rem;
+    }
+
+    .explorer__tab {
+      border-bottom: 1px solid var(--rule);
+      border-radius: 0;
+    }
+
+    .explorer__tab:hover {
+      background: transparent;
+    }
+
+    .explorer__dot::after {
+      inset: 5px;
+    }
+  }
+</style>
+
+<script>
+  const root = document.querySelector<HTMLElement>("[data-explorer]");
+  if (root) {
+    const tabs = Array.from(root.querySelectorAll<HTMLButtonElement>('[role="tab"]'));
+    const panels = Array.from(root.querySelectorAll<HTMLElement>('[role="tabpanel"]'));
+    const ids = tabs.map((t) => t.dataset.service ?? "");
+
+    // Hash used to deep-link a single service.
+    const hashFor = (id: string) => `#solucao-${id}`;
+    const fromHash = () => {
+      const m = /^#solucao-(.+)$/.exec(window.location.hash);
+      return m && ids.includes(m[1]) ? m[1] : null;
+    };
+
+    const select = (id: string, opts: { focus?: boolean; push?: boolean } = {}) => {
+      tabs.forEach((t) => {
+        const on = t.dataset.service === id;
+        t.setAttribute("aria-selected", String(on));
+        t.tabIndex = on ? 0 : -1;
+        if (on && opts.focus) t.focus();
+      });
+      panels.forEach((p) => {
+        if (p.dataset.panel === id) p.setAttribute("data-active", "");
+        else p.removeAttribute("data-active");
+      });
+      if (opts.push !== false) {
+        const url = `${window.location.pathname}${window.location.search}${hashFor(id)}`;
+        history.replaceState(null, "", url);
+      }
+    };
+
+    // Claim the markup
+    select(fromHash() ?? ids[0], { push: false });
+
+    tabs.forEach((tab, i) => {
+      tab.addEventListener("click", () => select(tab.dataset.service ?? ""));
+      tab.addEventListener("keydown", (e) => {
+        const step: Record<string, number> = {
+          ArrowDown: 1,
+          ArrowRight: 1,
+          ArrowUp: -1,
+          ArrowLeft: -1,
+          Home: -i,
+          End: tabs.length - 1 - i,
+        };
+        const delta = step[e.key];
+        if (delta === undefined) return;
+        e.preventDefault();
+        const next = tabs[(i + delta + tabs.length) % tabs.length];
+        if (next) select(next.dataset.service ?? "", { focus: true });
+      });
+    });
+
+    // Follow in-page links that point at a service
+    root.addEventListener("click", (e) => {
+      const t = e.target as HTMLElement;
+      const link = t.closest<HTMLAnchorElement>('a[href^="#solucao-"]');
+      if (!link) return;
+      e.preventDefault();
+      const id = link.getAttribute("href")?.replace("#solucao-", "") ?? "";
+      if (ids.includes(id)) select(id);
+    });
+
+    window.addEventListener("hashchange", () => {
+      const id = fromHash();
+      if (id) select(id, { push: false });
+    });
+  }
+</script>

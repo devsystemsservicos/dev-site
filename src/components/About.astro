@@ -1,0 +1,57 @@
+---
+const paragraphs = [
+  "A DEV Systems & Serviços nasceu em Maputo com uma ideia simples: a tecnologia de uma empresa deve funcionar, não impressionar. Construímos sistemas que a equipa usa todos os dias, integrações que falam entre si e automações que devolvem horas a quem fazia esse trabalho à mão.",
+  "Trabalhamos com um interlocutor único, do diagnóstico à manutenção. Quem constrói o sistema é quem o mantém — e portanto quem responde por ele. Sem intermediários, sem cobranças surpresas no fim do proyecto.",
+];
+---
+
+<section class="section section--mist" id="sobre" aria-labelledby="sobre-titulo">
+  <div class="shell">
+    <h2 class="about__tagline" id="sobre-titulo">
+      Conectando processos.<br />Simplificando negócios.
+    </h2>
+
+    <div class="about__rule" aria-hidden="true"></div>
+
+    <div class="about__cols">
+      {paragraphs.map((p) => <p class="about__p">{p}</p>)}
+    </div>
+  </div>
+</section>
+
+<style>
+  /* A manifesto band: the statement carries the weight, the prose steps back.
+     Deliberately different from the head-split sections above and below it. */
+
+  .about__tagline {
+    font-size: clamp(2.1rem, 5vw, 3.5rem);
+    line-height: 1.06;
+    max-width: 20ch;
+  }
+
+  .about__rule {
+    width: 72px;
+    height: 3px;
+    margin-block: clamp(1.75rem, 3vw, 2.5rem);
+    background: linear-gradient(to right, var(--cyan), var(--blue));
+    border-radius: 2px;
+  }
+
+  .about__cols {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: clamp(1.5rem, 4vw, 3.5rem);
+  }
+
+  .about__p {
+    max-width: 52ch;
+    font-size: 1.0625rem;
+    line-height: 1.68;
+  }
+
+  @media (max-width: 52rem) {
+    .about__cols {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+</style>

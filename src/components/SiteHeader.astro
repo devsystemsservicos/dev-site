@@ -1,0 +1,280 @@
+---
+import Logo from "./Logo.astro";
+
+const links = [
+  { href: "#inicio", label: "Início" },
+  { href: "#solucoes", label: "Soluções" },
+  { href: "#sobre", label: "Sobre" },
+  { href: "#contacto", label: "Contacto" },
+];
+---
+
+<header class="hd" data-hd>
+  <div class="hd__bar shell">
+    <a class="hd__logo" href="#inicio" aria-label="DEV Systems & Serviços — início">
+      <Logo tone="light" markHeight={38} />
+    </a>
+
+    <nav class="hd__nav" id="nav-principal" aria-label="Principal">
+      <ul class="hd__list">
+        {
+          links.map((l) => (
+            <li>
+              <a class="hd__link" href={l.href} data-navlink>
+                {l.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+      <a class="btn btn--primary hd__cta" href="#contacto">Fale Conosco</a>
+    </nav>
+
+    <button
+      class="hd__toggle"
+      type="button"
+      aria-expanded="false"
+      aria-controls="nav-principal"
+      data-menu-toggle
+    >
+      <span class="sr-only">Abrir menu</span>
+      <span class="hd__bars" aria-hidden="true"><i></i><i></i><i></i></span>
+    </button>
+  </div>
+</header>
+
+<style>
+  .hd {
+    position: fixed;
+    inset: 0 0 auto;
+    z-index: 50;
+    background: transparent;
+    transition: background-color 0.25s var(--ease), box-shadow 0.25s var(--ease);
+  }
+
+  .hd[data-scrolled] {
+    background: rgba(11, 31, 68, 0.94);
+    box-shadow: 0 1px 0 rgba(246, 250, 252, 0.1);
+    backdrop-filter: blur(8px);
+  }
+
+  .hd__bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    min-height: 76px;
+  }
+
+  .hd__logo {
+    text-decoration: none;
+    flex: none;
+  }
+
+  .hd__nav {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+  }
+
+  .hd__list {
+    display: flex;
+    align-items: center;
+    gap: 1.9rem;
+  }
+
+  .hd__link {
+    position: relative;
+    color: var(--on-navy-body);
+    font-size: 0.9375rem;
+    font-weight: 600;
+    text-decoration: none;
+    padding-block: 0.4rem;
+    transition: color 0.18s var(--ease);
+  }
+
+  .hd__link::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 2px;
+    background: var(--cyan);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.22s var(--ease);
+  }
+
+  .hd__link:hover,
+  .hd__link[aria-current="true"] {
+    color: var(--on-navy);
+  }
+
+  .hd__link:hover::after,
+  .hd__link[aria-current="true"]::after {
+    transform: scaleX(1);
+  }
+
+  .hd__cta {
+    padding: 0.62rem 1.1rem;
+  }
+
+  .hd__toggle {
+    display: none;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border: 1px solid var(--rule-navy);
+    border-radius: 5px;
+    background: transparent;
+    color: var(--on-navy);
+    cursor: pointer;
+  }
+
+  .hd__bars {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5px;
+    height: 100%;
+    margin-inline: auto;
+    width: 20px;
+  }
+
+  .hd__bars i {
+    display: block;
+    height: 2px;
+    background: currentColor;
+    transition: transform 0.22s var(--ease), opacity 0.18s var(--ease);
+  }
+
+  .hd__toggle[aria-expanded="true"] .hd__bars i:nth-child(1) {
+    transform: translateY(7px) rotate(45deg);
+  }
+  .hd__toggle[aria-expanded="true"] .hd__bars i:nth-child(2) {
+    opacity: 0;
+  }
+  .hd__toggle[aria-expanded="true"] .hd__bars i:nth-child(3) {
+    transform: translateY(-7px) rotate(-45deg);
+  }
+
+  @media (max-width: 52rem) {
+    .hd__toggle {
+      display: block;
+    }
+
+    .hd__nav {
+      position: absolute;
+      inset: 76px 0 auto;
+      display: none;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 0;
+      padding: 0.5rem 1.25rem 1.75rem;
+      padding-bottom: max(1.75rem, env(safe-area-inset-bottom));
+      /* Fully opaque: a menu must not show the page through it, and this
+         keeps it readable if backdrop-filter is unsupported. */
+      background: var(--navy);
+      border-top: 1px solid var(--rule-navy);
+      box-shadow: 0 18px 30px rgba(8, 23, 51, 0.45);
+      overscroll-behavior: contain;
+    }
+
+    .hd__nav[data-open] {
+      display: flex;
+    }
+
+    .hd__list {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 0;
+    }
+
+    .hd__list li + li {
+      border-top: 1px solid var(--rule-navy);
+    }
+
+    .hd__link {
+      display: block;
+      padding-block: 0.95rem;
+      font-size: 1.0625rem;
+    }
+
+    /* The full-width rule reads as a stray divider in a stacked list */
+    .hd__link::after {
+      display: none;
+    }
+
+    .hd__link[aria-current="true"] {
+      color: var(--cyan);
+    }
+
+    .hd__cta {
+      margin-top: 1.25rem;
+      justify-content: center;
+    }
+  }
+</style>
+
+<script>
+  const header = document.querySelector<HTMLElement>("[data-hd]");
+  const toggle = document.querySelector<HTMLButtonElement>("[data-menu-toggle]");
+  const nav = document.getElementById("nav-principal");
+
+  const setScrolled = () => {
+    if (!header) return;
+    if (window.scrollY > 12) header.setAttribute("data-scrolled", "");
+    else header.removeAttribute("data-scrolled");
+  };
+  setScrolled();
+  window.addEventListener("scroll", setScrolled, { passive: true });
+
+  const setMenu = (open: boolean) => {
+    toggle?.setAttribute("aria-expanded", String(open));
+    nav?.toggleAttribute("data-open", open);
+    if (open) {
+      const sr = toggle?.querySelector(".sr-only");
+      if (sr) sr.textContent = "Fechar menu";
+    } else {
+      const sr = toggle?.querySelector(".sr-only");
+      if (sr) sr.textContent = "Abrir menu";
+    }
+  };
+
+  toggle?.addEventListener("click", () => {
+    setMenu(toggle.getAttribute("aria-expanded") !== "true");
+  });
+
+  nav?.addEventListener("click", (e) => {
+    if ((e.target as HTMLElement).closest("a")) setMenu(false);
+  });
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") setMenu(false);
+  });
+
+  // Mark the section currently in view.
+  const links = Array.from(document.querySelectorAll<HTMLAnchorElement>("[data-navlink]"));
+  const sections = links
+    .map((a) => document.querySelector<HTMLElement>(a.getAttribute("href") ?? ""))
+    .filter((s): s is HTMLElement => Boolean(s));
+
+  if (sections.length && "IntersectionObserver" in window) {
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (!entry.isIntersecting) continue;
+          links.forEach((a) =>
+            a.setAttribute(
+              "aria-current",
+              String(a.getAttribute("href") === `#${entry.target.id}`),
+            ),
+          );
+        }
+      },
+      { rootMargin: "-45% 0px -50% 0px" },
+    );
+    sections.forEach((s) => io.observe(s));
+  }
+</script>

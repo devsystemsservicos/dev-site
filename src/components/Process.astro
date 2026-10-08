@@ -1,0 +1,160 @@
+---
+import { process } from "../data/site";
+---
+
+<section class="section section--navy" id="processo" aria-labelledby="processo-titulo">
+  <div class="shell">
+    <div class="head-split">
+      <h2 class="head__title" id="processo-titulo">Como trabalhamos</h2>
+      <p class="head-split__lead">
+        Não começamos por escolher tecnologia. Começamos por perceber onde o trabalho
+        se perde — e só depois construímos.
+      </p>
+    </div>
+
+    <ol class="track">
+      {
+        process.map((step, i) => (
+          <li class="track__step">
+            <span class="track__marker" aria-hidden="true">
+              <span class="track__num">{String(i + 1).padStart(2, "0")}</span>
+            </span>
+            <h3 class="track__title">{step.title}</h3>
+            <p class="track__body">{step.body}</p>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+</section>
+
+<style>
+  .track {
+    position: relative;
+    margin-top: clamp(3rem, 6vw, 4.5rem);
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 1.5rem;
+    counter-reset: step;
+  }
+
+  /* The connecting rule: same device as the spine, turned horizontal */
+  .track::before {
+    content: "";
+    position: absolute;
+    left: 8px;
+    right: 8px;
+    top: 19px;
+    height: 2px;
+    background: linear-gradient(
+      to right,
+      var(--cyan) 0%,
+      rgba(37, 99, 235, 0.5) 55%,
+      rgba(37, 99, 235, 0.12) 100%
+    );
+  }
+
+  .track__step {
+    position: relative;
+  }
+
+  .track__marker {
+    position: relative;
+    z-index: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--navy);
+    box-shadow: 0 0 0 2px var(--navy), inset 0 0 0 2px var(--cyan);
+  }
+
+  .track__num {
+    font-size: 0.8125rem;
+    font-weight: 800;
+    letter-spacing: 0.02em;
+    color: var(--cyan);
+  }
+
+  .track__title {
+    margin-top: 1.35rem;
+    font-size: 1.125rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+
+  .track__body {
+    margin-top: 0.55rem;
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    max-width: 22ch;
+  }
+
+  @media (max-width: 62rem) {
+    .track {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 2.25rem 1.75rem;
+    }
+
+    .track::before {
+      display: none;
+    }
+
+    .track__body {
+      max-width: 34ch;
+    }
+  }
+
+  @media (max-width: 34rem) {
+    .track {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 1.85rem;
+    }
+
+    /* The rule turns vertical and runs through the markers */
+    .track::before {
+      display: block;
+      left: 19px;
+      right: auto;
+      top: 20px;
+      bottom: 20px;
+      width: 2px;
+      height: auto;
+      background: linear-gradient(
+        to bottom,
+        var(--cyan) 0%,
+        rgba(37, 99, 235, 0.5) 60%,
+        transparent 100%
+      );
+    }
+
+    /* Marker keeps the left column so the rule passes through its centre;
+       the text moves to a second column so it never crosses the rule. */
+    .track__step {
+      display: grid;
+      grid-template-columns: 40px minmax(0, 1fr);
+      grid-template-areas:
+        "marker title"
+        ".      body";
+      align-items: start;
+      column-gap: 1.15rem;
+    }
+
+    .track__marker {
+      grid-area: marker;
+    }
+
+    .track__title {
+      grid-area: title;
+      margin-top: 0.5rem;
+    }
+
+    .track__body {
+      grid-area: body;
+      margin-top: 0.45rem;
+      max-width: none;
+    }
+  }
+</style>

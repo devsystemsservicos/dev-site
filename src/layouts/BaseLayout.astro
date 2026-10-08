@@ -1,0 +1,70 @@
+---
+import "../styles/global.css";
+import { site, contact } from "../data/site";
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const { title, description = site.description } = Astro.props;
+const pageTitle = title ? `${title} · ${site.name}` : `${site.name} — ${site.tagline}`;
+
+/**
+ * JSON.stringify does not neutralise "</script>" — a value containing that
+ * sequence would close the tag early and let markup through. Nothing user-
+ * supplied reaches here today, but this is the standard way to close the gap.
+ */
+const orgSchema = {
+  "@context": "https://schema.org",
+  "@type": "ProfessionalService",
+  name: site.name,
+  description: site.description,
+  url: site.url,
+  telephone: contact.phoneDisplay,
+  email: contact.email,
+  address: {
+    "@type": "PostalAddress",
+    addressLocality: "Maputo",
+    addressCountry: "MZ",
+  },
+  areaServed: "Moçambique",
+  slogan: site.tagline,
+};
+
+const schemaJson = JSON.stringify(orgSchema).replace(/</g, "\\u003c");
+---
+
+<!doctype html>
+<html lang="pt-MZ">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>{pageTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={site.url} />
+
+    <link rel="icon" href="/brand/favicon.png" type="image/png" />
+    <link rel="apple-touch-icon" href="/brand/favicon.png" />
+
+    
+
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content={site.locale} />
+    <meta property="og:site_name" content={site.name} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={site.url} />
+    <meta property="og:image" content={`${site.url}/brand/og-lockup.png`} />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <meta name="theme-color" content="#0B1F44" />
+
+    <script type="application/ld+json" set:html={schemaJson} />
+  </head>
+  <body>
+    <a class="skip-link" href="#conteudo">Saltar para o conteúdo</a>
+    <slot />
+  </body>
+</html>

@@ -1,0 +1,83 @@
+---
+const pains = [
+  {
+    title: "A mesma informação, escrita duas vezes",
+    body: "O dado entra no sistema, segue por email e volta a ser digitado noutro sítio. Duas pessoas, dois erros.",
+  },
+  {
+    title: "Relatórios montados à mão",
+    body: "Toda a semana alguém junta folhas de cálculo para responder à mesma pergunta. Para sempre.",
+  },
+  {
+    title: "Um processo que depende de uma pessoa",
+    body: "Se quem sabe fazer sair, o trabalho pára com ela. Não é competência individual — é processo mal desenhado.",
+  },
+  {
+    title: "Sistemas que não conversam",
+    body: "Contabilidade, estoque, vendas e clientes vivem separados, sem um ponto de encontro.",
+  },
+];
+---
+
+<section class="section section--mist" aria-labelledby="problema-titulo">
+  <div class="shell narrative">
+    <div class="narrative__step">
+      <span class="narrative__node" aria-hidden="true"></span>
+      <div class="narrative__body">
+        <div class="head-split">
+          <h2 class="head__title" id="problema-titulo">Onde o tempo se perde</h2>
+          <p class="head-split__lead">
+            A maioria das empresas não perde dinheiro por falta de tecnologia. Perde
+            porque os sistemas não se falam — e porque o trabalho continua a ser feito à mão.
+          </p>
+        </div>
+
+        <ul class="pains">
+          {
+            pains.map((p) => (
+              <li class="pains__item">
+                <h3 class="pains__title">{p.title}</h3>
+                <p class="pains__body">{p.body}</p>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .pains {
+    margin-top: clamp(2.25rem, 4vw, 3.25rem);
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0 clamp(2rem, 5vw, 4rem);
+  }
+
+  @media (max-width: 44rem) {
+    .pains {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 0;
+    }
+  }
+
+  .pains__item {
+    padding-block: 1.5rem;
+    border-top: 1px solid var(--rule);
+  }
+
+  .pains__title {
+    font-size: 1.0625rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.35;
+  }
+
+  .pains__body {
+    margin-top: 0.55rem;
+    font-size: 0.9875rem;
+    line-height: 1.6;
+    max-width: 42ch;
+  }
+</style>
