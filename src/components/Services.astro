@@ -314,7 +314,20 @@ import { services } from "../data/site";
     select(fromHash() ?? ids[0], { push: false });
 
     tabs.forEach((tab, i) => {
-      tab.addEventListener("click", () => select(tab.dataset.service ?? ""));
+      // Use pointerdown for better mobile touch response
+      tab.addEventListener("pointerdown", (e) => {
+        // Only handle left click / primary touch
+        if (e.button !== 0) return;
+        e.preventDefault();
+        select(tab.dataset.service ?? "");
+      }, { passive: false });
+      
+      tab.addEventListener("click", (e) => {
+        // Fallback for non-pointer devices
+        if (e.detail === 0) return; // Already handled by pointerdown
+        select(tab.dataset.service ?? "");
+      });
+      
       tab.addEventListener("keydown", (e) => {
         const step: Record<string, number> = {
           ArrowDown: 1,

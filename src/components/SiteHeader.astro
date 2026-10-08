@@ -236,22 +236,41 @@ const links = [
     if (open) {
       const sr = toggle?.querySelector(".sr-only");
       if (sr) sr.textContent = "Fechar menu";
+      document.body.style.overflow = "hidden"; // prevent background scroll
     } else {
       const sr = toggle?.querySelector(".sr-only");
       if (sr) sr.textContent = "Abrir menu";
+      document.body.style.overflow = "";
     }
   };
 
-  toggle?.addEventListener("click", () => {
-    setMenu(toggle.getAttribute("aria-expanded") !== "true");
-  });
+  // Ensure toggle exists before adding listener
+  if (toggle) {
+    toggle.addEventListener("click", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      const isOpen = toggle.getAttribute("aria-expanded") === "true";
+      setMenu(!isOpen);
+    });
+  }
 
+  // Close menu when clicking a link
   nav?.addEventListener("click", (e) => {
     if ((e.target as HTMLElement).closest("a")) setMenu(false);
   });
 
+  // Close on Escape
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape") setMenu(false);
+  });
+
+  // Close menu when clicking outside
+  document.addEventListener("click", (e) => {
+    const target = e.target as HTMLElement;
+    const isOpen = nav?.hasAttribute("data-open");
+    if (isOpen && !nav?.contains(target) && !toggle?.contains(target)) {
+      setMenu(false);
+    }
   });
 
   // Mark the section currently in view.

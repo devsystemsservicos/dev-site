@@ -52,11 +52,7 @@ const columns = [
         <h2 class="ft__title">Falar</h2>
         <ul class="ft__list">
           <li>
-            <a
-              href={whatsappLink()}
-              target="_blank"
-              rel="noopener noreferrer">{contact.phoneDisplay}</a
-            >
+            <a href={`tel:${contact.phoneHref}`}>{contact.phoneDisplay}</a>
           </li>
           <li><a href={`mailto:${contact.email}`}>{contact.email}</a></li>
         </ul>

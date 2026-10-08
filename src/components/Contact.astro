@@ -340,8 +340,19 @@ const prefill = "Olá! Gostaria de falar sobre um sistema para a minha empresa."
       const text = lines.join("\n");
       const waUrl = `https://wa.me/258862393272?text=${encodeURIComponent(text)}`;
 
-      // Open WhatsApp
-      window.open(waUrl, "_blank", "noopener,noreferrer");
+      // Open WhatsApp with fallback for popup blockers
+      const waOpened = window.open(waUrl, "_blank", "noopener,noreferrer");
+      
+      if (!waOpened || waOpened.closed || typeof waOpened.closed === "undefined") {
+        // Popup blocked - fallback to direct link
+        const fallbackLink = document.createElement("a");
+        fallbackLink.href = waUrl;
+        fallbackLink.target = "_blank";
+        fallbackLink.rel = "noopener noreferrer";
+        document.body.appendChild(fallbackLink);
+        fallbackLink.click();
+        document.body.removeChild(fallbackLink);
+      }
 
       form.reset();
       setNote("WhatsApp aberto. Se não abrir, verifique o bloqueador de pop-ups.", "ok");
